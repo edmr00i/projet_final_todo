@@ -1,22 +1,11 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Tâches</title>
-</head>
-<body>
+{% extends "taches/base.html" %}
+
+{% block title %}Liste des Tâches{% endblock %}
+
+{% block content %}
     <h1>Mes Tâches</h1>
     
     <a href="{% url 'ajouter_tache' %}">Ajouter une nouvelle tâche</a>
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
     
     {% if taches %}
         <ul>
@@ -44,5 +33,4 @@
     {% else %}
         <p>Aucune tâche pour le moment.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}

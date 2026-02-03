@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ titre_page }}</title>
-</head>
-<body>
+{% extends "taches/base.html" %}
+
+{% block title %}{{ titre_page }}{% endblock %}
+
+{% block content %}
     <h1>{{ titre_page }}</h1>
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
     
     <form method="post">
         {% csrf_token %}
@@ -33,8 +22,7 @@
             </div>
         {% endfor %}
         
-        <button type="submit">Ajouter la tâche</button>
+        <button type="submit">Valider</button>
         <a href="{% url 'liste_taches' %}">Annuler</a>
     </form>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "taches/base.html" %}
+
+{% block title %}{{ titre_page }}{% endblock %}
+
+{% block content %}
+    <h1>{{ titre_page }}</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errors">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit">Valider</button>
+        <a href="{% url 'liste_taches' %}">Annuler</a>
+    </form>
+{% endblock %}

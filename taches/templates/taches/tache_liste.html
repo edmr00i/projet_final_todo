@@ -8,6 +8,16 @@
 <body>
     <h1>Mes Tâches</h1>
     
+    <a href="{% url 'ajouter_tache' %}">Ajouter une nouvelle tâche</a>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
     {% if taches %}
         <ul>
             {% for tache in taches %}
@@ -24,6 +34,9 @@
                             [En cours]
                         {% endif %}
                     </span>
+                    <div>
+                        <a href="{% url 'modifier_tache' tache.id %}">Modifier</a>
+                    </div>
                 </li>
             {% endfor %}
         </ul>

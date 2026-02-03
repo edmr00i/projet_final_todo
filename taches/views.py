@@ -41,3 +41,16 @@ def modifier_tache(request, tache_id):
     
     context = {'form': form, 'titre_page': 'Modifier une tâche'}
     return render(request, 'taches/tache_form.html', context)
+
+
+def supprimer_tache(request, tache_id):
+    """Supprime une tâche après confirmation."""
+    tache = get_object_or_404(Tache, pk=tache_id)
+    
+    if request.method == 'POST':
+        tache.delete()
+        messages.success(request, 'Tâche supprimée avec succès!')
+        return redirect('liste_taches')
+    
+    context = {'tache': tache}
+    return render(request, 'taches/tache_confirm_delete.html', context)

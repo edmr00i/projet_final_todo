@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Tâches</title>
+</head>
+<body>
+    <h1>Mes Tâches</h1>
+    
+    {% if taches %}
+        <ul>
+            {% for tache in taches %}
+                <li>
+                    <strong>{{ tache.titre }}</strong>
+                    {% if tache.description %}
+                        <p>{{ tache.description }}</p>
+                    {% endif %}
+                    <small>Créée le: {{ tache.cree_le }}</small>
+                    <span>
+                        {% if tache.termine %}
+                            [Terminée]
+                        {% else %}
+                            [En cours]
+                        {% endif %}
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune tâche pour le moment.</p>
+    {% endif %}
+</body>
+</html>

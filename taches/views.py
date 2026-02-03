@@ -1,5 +1,5 @@
-
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 from .models import Tache
 from .serializers import TacheSerializer
 
@@ -20,5 +20,25 @@ class TacheViewSet(ModelViewSet):
         queryset: Toutes les tâches de la base de données.
         serializer_class: Le sérialiseur à utiliser pour la sérialisation/désérialisation.
     """
-    queryset = Tache.objects.all()
     serializer_class = TacheSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        Filtre les tâches pour ne retourner que celles appartenant à l'utilisateur authentifié.
+        
+        Returns:
+            QuerySet: Les tâches de l'utilisateur connecté.
+        """
+        return Tache.objects.filter(proprietaire=self.request.user)
+    
+    def perform_create(self, serializer):
+        """
+        Associe la tâche créée à l'utilisateur authentifié.
+        
+        Args:
+            serializer: Le sérialiseur contenant les données de la tâche à créer.
+        """
+        serializer.save(proprietaire=self.request.user)
+    
+    

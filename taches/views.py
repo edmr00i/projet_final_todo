@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 from .models import Tache
 from .forms import TacheForm
+from .serializers import TacheSerializer
 
 
 def liste_taches(request):
@@ -108,3 +112,91 @@ def supprimer_tache(request, tache_id):
     
     context = {'tache': tache}
     return render(request, 'taches/tache_confirm_delete.html', context)
+
+
+@api_view(['GET', 'POST'])
+def liste_taches_api(request):
+    """
+    Retourne la liste de toutes les tâches au format JSON ou crée une nouvelle tâche.
+    
+    Vue basée sur une fonction utilisant le décorateur @api_view de DRF.
+    
+    GET: Accepte les requêtes GET et retourne toutes les tâches.
+    POST: Accepte les requêtes POST pour créer une nouvelle tâche.
+         - Valide les données avec TacheSerializer
+         - Si valides: sauvegarde la tâche et retourne un statut 201 Created
+         - Si invalides: retourne les erreurs avec un statut 400
+    
+    Args:
+        request (HttpRequest): L'objet requête HTTP.
+    
+    Returns:
+        Response: 
+            - GET: Réponse DRF contenant les données sérialisées de toutes les tâches.
+            - POST (valide): Données de la tâche créée avec statut 201.
+            - POST (invalide): Erreurs de validation avec statut 400.
+    """
+    if request.method == 'GET':
+        taches = Tache.objects.all()
+        serializer = TacheSerializer(taches, many=True)
+        return Response(serializer.data)
+    
+    elif request.method == 'POST':
+        serializer = TacheSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def detail_tache_api(request, pk):
+    """
+    Récupère, met à jour ou supprime une tâche spécifique par sa clé primaire.
+    
+    Vue basée sur une fonction utilisant le décorateur @api_view de DRF.
+    
+    GET: Récupère les détails d'une tâche.
+    PUT: Met à jour complètement une tâche.
+         - Valide les données avec TacheSerializer
+         - Si valides: met à jour la tâche et retourne les données avec statut 200
+         - Si invalides: retourne les erreurs avec statut 400
+    DELETE: Supprime une tâche.
+            - Supprime la tâche et retourne un statut 204 No Content
+            - Retourne une erreur 404 si la tâche n'existe pas
+    
+    Args:
+        request (HttpRequest): L'objet requête HTTP.
+        pk (int): La clé primaire (id) de la tâche.
+    
+    Returns:
+        Response:
+            - GET: Données sérialisées de la tâche avec statut 200.
+            - PUT (valide): Données mises à jour de la tâche avec statut 200.
+            - PUT (invalide): Erreurs de validation avec statut 400.
+            - DELETE: Statut 204 No Content si succès.
+            - 404: Si la tâche n'existe pas.
+    """
+    try:
+        tache = Tache.objects.get(pk=pk)
+    except Tache.DoesNotExist:
+        return Response(
+            {'detail': 'Tâche non trouvée.'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    if request.method == 'GET':
+        serializer = TacheSerializer(tache)
+        return Response(serializer.data)
+    
+    elif request.method == 'PUT':
+        serializer = TacheSerializer(tache, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    elif request.method == 'DELETE':
+        tache.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+

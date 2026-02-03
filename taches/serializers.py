@@ -9,6 +9,7 @@ class TacheSerializer(serializers.ModelSerializer):
     Expose tous les champs du modèle Tache pour la sérialisation/désérialisation
     des données JSON.
     """
+    proprietaire = serializers.ReadOnlyField(source='proprietaire.username')
     
     class Meta:
         model = Tache

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.conf import settings
 
 class Tache(models.Model):
     """
@@ -19,6 +19,11 @@ class Tache(models.Model):
     description = models.TextField(blank=True)
     cree_le = models.DateTimeField(auto_now_add=True)
     termine = models.BooleanField(default=False)
+    proprietaire = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+        related_name='taches'
+    )
 
     class Meta:
         ordering = ['-cree_le']

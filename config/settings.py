@@ -144,14 +144,14 @@ STATICFILES_DIRS = [
 # https://www.django-rest-framework.org/api-guide/authentication/
 # Configuration de l'authentification et des permissions pour l'API REST.
 # Toutes les vues de l'API nécessitent une authentification par token.
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework.authentication.TokenAuthentication',
+#     ],
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+# }
 
 # CORS Configuration
 # Configuration pour autoriser les requêtes cross-origin depuis le frontend React.
@@ -160,3 +160,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite dev server par défaut
     "http://127.0.0.1:5173",  # Alternative localhost
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+

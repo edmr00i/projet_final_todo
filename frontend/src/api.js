@@ -1,12 +1,11 @@
-const API_BASE_URL = "http://127.0.0.1:8000/api/taches/";
-const AUTH_HEADER = "Token 334191d8e0b8a34ee2b5c80afc036aa5896f97d3";
+const API_BASE_URL = "http://127.0.0.1:8000/api";
 
-export async function fetchTachesApi() {
-  const response = await fetch(API_BASE_URL, {
+export async function fetchTachesApi(token) {
+  const response = await fetch(API_BASE_URL+"/taches/", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: AUTH_HEADER,
+      Authorization: `Token ${token}`,
     },
   });
 
@@ -19,12 +18,24 @@ export async function fetchTachesApi() {
   return response.json();
 }
 
-export async function createTacheApi(titre, description) {
-  const response = await fetch(API_BASE_URL, {
+export async function loginApi(username, password) {
+  const response = await fetch(API_BASE_URL+"/token/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!response.ok) {
+    throw new Error("Identifiants incorrects");
+  }
+  return response.json();
+}
+
+export async function createTacheApi(titre, description, token) {
+  const response = await fetch(API_BASE_URL+"/taches/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: AUTH_HEADER,
+      Authorization: `Token ${token}`,
     },
     body: JSON.stringify({ titre, description }),
   });
@@ -38,12 +49,12 @@ export async function createTacheApi(titre, description) {
   return response.json();
 }
 
-export async function deleteTacheApi(id) {
-  const response = await fetch(`${API_BASE_URL}${id}/`, {
+export async function deleteTacheApi(id, token) {
+  const response = await fetch(`${API_BASE_URL}/taches/${id}/`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: AUTH_HEADER,
+      Authorization: `Token ${token}`,
     },
   });
 
@@ -54,14 +65,18 @@ export async function deleteTacheApi(id) {
   }
 }
 
-export async function toggleTacheApi(id, termineActuel) {
-  const response = await fetch(`${API_BASE_URL}${id}/`, {
+export async function toggleTacheApi(id, termineActuel, token) {
+  return updateTacheApi(id, { termine: !termineActuel }, token);
+}
+
+export async function updateTacheApi(id, data, token) {
+  const response = await fetch(`${API_BASE_URL}/taches/${id}/`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      Authorization: AUTH_HEADER,
+      Authorization: `Token ${token}`,
     },
-    body: JSON.stringify({ termine: !termineActuel }),
+    body: JSON.stringify(data),
   });
 
   if (!response.ok) {
@@ -72,4 +87,3 @@ export async function toggleTacheApi(id, termineActuel) {
 
   return response.json();
 }
-

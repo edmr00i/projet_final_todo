@@ -6,14 +6,23 @@ class Tache(models.Model):
     Modèle représentant une tâche à accomplir.
     
     Une tâche contient un titre, une description optionnelle, une date de création 
-    automatique et un statut de réalisation. Les tâches sont ordonnées par date de 
-    création décroissante (les plus récentes en premier).
+    automatique et un statut de réalisation. Chaque tâche appartient à un utilisateur
+    (proprietaire) et les tâches sont ordonnées par date de création décroissante 
+    (les plus récentes en premier).
     
     Attributs:
-        titre (CharField): Le titre de la tâche (max 200 caractères).
-        description (TextField): Description détaillée de la tâche (optionnel).
-        cree_le (DateTimeField): Date et heure de création (automatiquement défini).
+        titre (CharField): Le titre de la tâche (max 200 caractères, requis).
+        description (TextField): Description détaillée de la tâche (optionnel, peut être vide).
+        cree_le (DateTimeField): Date et heure de création (automatiquement défini à la création).
         termine (BooleanField): Indicateur de l'accomplissement de la tâche (faux par défaut).
+        proprietaire (ForeignKey): Référence vers l'utilisateur propriétaire de la tâche.
+            Suppression en cascade si l'utilisateur est supprimé.
+    
+    Relations:
+        - proprietaire: Relation ForeignKey vers AUTH_USER_MODEL avec related_name='taches'.
+    
+    Métadonnées:
+        - ordering: Les tâches sont triées par date de création décroissante ('-cree_le').
     """
     titre = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -31,6 +40,9 @@ class Tache(models.Model):
     def __str__(self):
         """
         Retourne la représentation textuelle de la tâche.
+        
+        Utilisé pour l'affichage dans l'interface d'administration Django
+        et dans les représentations de débogage.
         
         Returns:
             str: Le titre de la tâche.

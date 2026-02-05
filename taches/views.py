@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Tache
 from .serializers import TacheSerializer
-from .tasks import tache_test_asynchrone
+from .tasks import tache_test_asynchrone, send_creation_email
 
 
 class TacheViewSet(ModelViewSet):
@@ -30,7 +30,8 @@ class TacheViewSet(ModelViewSet):
     
     Méthodes:
         get_queryset(): Filtre les tâches pour ne retourner que celles de l'utilisateur connecté.
-        perform_create(serializer): Associe automatiquement la tâche créée à l'utilisateur authentifié.
+        perform_create(serializer): Associe automatiquement la tâche créée à l'utilisateur authentifié
+                                    et déclenche l'envoi d'e-mail asynchrone.
     """
     serializer_class = TacheSerializer
     permission_classes = [IsAuthenticated]
@@ -50,17 +51,30 @@ class TacheViewSet(ModelViewSet):
     
     def perform_create(self, serializer):
         """
-        Associe automatiquement la tâche créée à l'utilisateur authentifié.
+        Associe automatiquement la tâche créée à l'utilisateur authentifié
+        et déclenche l'envoi d'un e-mail de notification en arrière-plan.
         
         Cette méthode est appelée lors de la création d'une nouvelle tâche via POST.
         Elle garantit que le champ 'proprietaire' est automatiquement défini avec
         l'utilisateur actuellement authentifié, sans nécessiter de le passer dans les données.
         
+        Après la sauvegarde, une tâche Celery asynchrone est déclenchée pour envoyer
+        un e-mail de notification, sans bloquer la réponse HTTP au client.
+        
         Args:
             serializer (TacheSerializer): Le sérialiseur contenant les données de la tâche à créer.
                 Les données doivent contenir au minimum 'titre'. 'description' et 'termine' sont optionnels.
+        
+        Flow:
+            1. Sauvegarde de la tâche avec l'utilisateur comme propriétaire
+            2. Déclenchement asynchrone de send_creation_email avec l'ID de la tâche
+            3. Retour immédiat au client (pas d'attente de l'envoi d'e-mail)
         """
+        # Sauvegarder la tâche avec le propriétaire
         serializer.save(proprietaire=self.request.user)
+        
+        # Déclencher l'envoi d'e-mail de manière asynchrone
+        send_creation_email.delay(serializer.instance.id)
 
 
 @api_view(['GET', 'POST'])

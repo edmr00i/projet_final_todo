@@ -1,7 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
 from .models import Tache
 from .serializers import TacheSerializer
+from .tasks import tache_test_asynchrone
 
 
 class TacheViewSet(ModelViewSet):
@@ -57,5 +61,42 @@ class TacheViewSet(ModelViewSet):
                 Les données doivent contenir au minimum 'titre'. 'description' et 'termine' sont optionnels.
         """
         serializer.save(proprietaire=self.request.user)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def test_celery_view(request):
+    """
+    Vue de test pour vérifier que Celery fonctionne correctement.
     
+    Cette vue déclenche la tâche asynchrone tache_test_asynchrone en arrière-plan
+    et retourne immédiatement une réponse au client sans attendre la fin de la tâche.
     
+    Endpoint:
+        GET ou POST /api/test-celery/
+    
+    Permissions:
+        - Nécessite une authentification par token
+    
+    Returns:
+        Response: Un message JSON confirmant que la tâche a été lancée en arrière-plan.
+            La réponse est immédiate (non-bloquante), même si la tâche prend 5 secondes.
+    
+    Exemple de réponse:
+        {
+            "message": "Tâche asynchrone lancée en arrière-plan !",
+            "task_id": "abc123-def456-..."
+        }
+    
+    Notes:
+        - La tâche s'exécute dans un worker Celery séparé
+        - Le message "Tâche asynchrone terminée avec succès !" apparaîtra dans les logs du worker
+        - Cette vue démontre le principe du traitement asynchrone : l'utilisateur n'attend pas
+    """
+    # Déclencher la tâche de manière asynchrone
+    result = tache_test_asynchrone.delay()
+    
+    return Response({
+        'message': 'Tâche asynchrone lancée en arrière-plan !',
+        'task_id': str(result.id)
+    }, status=status.HTTP_200_OK)

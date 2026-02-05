@@ -14,19 +14,24 @@ function AjoutTacheForm({ onAjoutTache }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="add-form" onSubmit={handleSubmit}>
       <input
         type="text"
+        className="input input--title"
         value={titre}
         onChange={(e) => setTitre(e.target.value)}
         placeholder="Ajouter une nouvelle tâche"
       />
       <textarea
+        className="input input--description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Description (optionnel)"
+        rows={2}
       />
-      <button type="submit">Ajouter</button>
+      <button type="submit" className="btn btn--primary">
+        Ajouter
+      </button>
     </form>
   );
 }

@@ -1,42 +1,306 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/* Layout */
+.app {
+  min-height: 100vh;
   padding: 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn--secondary {
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn--secondary:hover {
+  background: var(--color-border);
+}
+
+.btn--danger {
+  background: transparent;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.btn--danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.btn--small {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Inputs */
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input:hover {
+  border-color: var(--color-text-muted);
+}
+
+.input--title {
+  font-weight: 500;
+}
+
+.input--description {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.checkbox-label--inline {
+  margin-right: 0.75rem;
+}
+
+/* Messages */
+.message {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+}
+
+.message--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.message--muted {
+  color: var(--color-text-muted);
   text-align: center;
+  padding: 2rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Login */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.login-title {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-text);
 }
 
-.card {
-  padding: 2em;
+.login-form .field:last-of-type {
+  margin-bottom: 1.5rem;
 }
 
-.read-the-docs {
-  color: #888;
+/* Add task form */
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* Task list */
+.tache-container {
+  margin-top: 0.5rem;
+}
+
+.tache-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Task card */
+.tache-card {
+  padding: 1.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.tache-card:hover {
+  border-color: var(--color-text-muted);
+}
+
+.tache-card--done {
+  opacity: 0.85;
+}
+
+.tache-card--done .tache-card__titre {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.tache-card--done .tache-card__description {
+  color: var(--color-text-muted);
+}
+
+.tache-card__body {
+  margin-bottom: 1rem;
+}
+
+.tache-card__titre {
+  margin: 0 0 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+.tache-card__description {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.tache-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tache-card__statut {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-muted);
+}
+
+.tache-card--done .tache-card__statut {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--color-success);
+}
+
+.tache-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.tache-card--editing .tache-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tache-card--editing .tache-card__actions {
+  border-top: none;
+  padding-top: 0;
 }

@@ -16,4 +16,6 @@ router.register(r'taches', views.TacheViewSet, basename='tache')
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/test-celery/', views.test_celery_view, name='test-celery'),
+    path('api/start-report/', views.StartReportGenerationView.as_view(), name='start-report'),
+    path('api/check-report-status/<str:task_id>/', views.CheckTaskStatusView.as_view(), name='check-report-status'),
 ]

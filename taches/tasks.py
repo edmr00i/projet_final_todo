@@ -105,3 +105,82 @@ L'équipe de gestion de tâches
         
     except Tache.DoesNotExist:
         return f"Erreur : Aucune tâche trouvée avec l'ID {tache_id}"
+
+
+@shared_task
+def generate_task_report():
+    """
+    Génère un rapport de tâches de manière asynchrone.
+    
+    Cette tâche simule un traitement long (analyse, calculs, génération de PDF, etc.)
+    en attendant 15 secondes avant de retourner un message de succès.
+    
+    Elle peut être utilisée pour démontrer le suivi de progression d'une tâche
+    asynchrone depuis l'interface utilisateur React.
+    
+    Utilisation:
+        # Exécuter de manière asynchrone (non-bloquant)
+        result = generate_task_report.delay()
+        
+        # Récupérer l'ID de la tâche pour le suivi
+        task_id = result.id
+        
+        # Vérifier le statut plus tard
+        from celery.result import AsyncResult
+        task_result = AsyncResult(task_id)
+        if task_result.ready():
+            print(task_result.result)
+    
+    Returns:
+        str: Un message de confirmation de génération du rapport.
+    
+    Notes:
+        - Le traitement prend 15 secondes (simulation d'un long traitement)
+        - En production, cette tâche pourrait générer un vrai rapport PDF,
+          analyser des données, effectuer des calculs complexes, etc.
+        - L'utilisateur peut suivre la progression via l'ID de la tâche retourné
+    """
+    # Simuler un traitement long
+    time.sleep(15)
+    
+    # Retourner le message de succès
+    return "Le rapport de tâches a été généré avec succès !"
+
+
+@shared_task
+def cleanup_completed_tasks():
+    """
+    Supprime toutes les tâches marquées comme terminées.
+    
+    Cette tâche asynchrone recherche toutes les tâches avec termine=True
+    et les supprime de la base de données. Utile pour le nettoyage
+    périodique des tâches complétées.
+    
+    Utilisation:
+        # Exécuter de manière asynchrone (non-bloquant)
+        result = cleanup_completed_tasks.delay()
+        
+        # Exécuter de manière synchrone (pour les tests)
+        count = cleanup_completed_tasks()
+        
+        # Planifier avec Celery Beat (exemple dans settings.py)
+        # CELERY_BEAT_SCHEDULE = {
+        #     'cleanup-completed-tasks-weekly': {
+        #         'task': 'taches.tasks.cleanup_completed_tasks',
+        #         'schedule': crontab(hour=0, minute=0, day_of_week='sunday'),
+        #     },
+        # }
+    
+    Returns:
+        int: Le nombre de tâches supprimées.
+    
+    Notes:
+        - Cette action est irréversible.
+        - En production, envisagez d'archiver les tâches plutôt que de les supprimer.
+    """
+    # Récupérer et supprimer toutes les tâches terminées
+    taches_terminees = Tache.objects.filter(termine=True)
+    count = taches_terminees.count()
+    taches_terminees.delete()
+    
+    return count

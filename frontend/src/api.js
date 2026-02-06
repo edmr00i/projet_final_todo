@@ -1,7 +1,7 @@
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
 export async function fetchTachesApi(token) {
-  const response = await fetch(API_BASE_URL+"/taches/", {
+  const response = await fetch(`${API_BASE_URL}/taches/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -11,7 +11,7 @@ export async function fetchTachesApi(token) {
 
   if (!response.ok) {
     throw new Error(
-      `Erreur ${response.status}: Impossible de récupérer les données`
+      `Erreur ${response.status}: Impossible de rÃ©cupÃ©rer les donnÃ©es`
     );
   }
 
@@ -19,7 +19,7 @@ export async function fetchTachesApi(token) {
 }
 
 export async function loginApi(username, password) {
-  const response = await fetch(API_BASE_URL+"/token/", {
+  const response = await fetch(`${API_BASE_URL}/token/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
@@ -31,7 +31,7 @@ export async function loginApi(username, password) {
 }
 
 export async function createTacheApi(titre, description, token) {
-  const response = await fetch(API_BASE_URL+"/taches/", {
+  const response = await fetch(`${API_BASE_URL}/taches/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export async function createTacheApi(titre, description, token) {
 
   if (!response.ok) {
     throw new Error(
-      `Erreur ${response.status}: Impossible de créer la tâche`
+      `Erreur ${response.status}: Impossible de crÃ©er la tÃ¢che`
     );
   }
 
@@ -60,7 +60,7 @@ export async function deleteTacheApi(id, token) {
 
   if (!response.ok) {
     throw new Error(
-      `Erreur ${response.status}: Impossible de supprimer la tâche`
+      `Erreur ${response.status}: Impossible de supprimer la tÃ¢che`
     );
   }
 }
@@ -81,7 +81,43 @@ export async function updateTacheApi(id, data, token) {
 
   if (!response.ok) {
     throw new Error(
-      `Erreur ${response.status}: Impossible de mettre à jour la tâche`
+      `Erreur ${response.status}: Impossible de mettre Ã  jour la tÃ¢che`
+    );
+  }
+
+  return response.json();
+}
+
+export async function startReportGenerationApi(token) {
+  const response = await fetch(`${API_BASE_URL}/start-report/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Erreur ${response.status}: Impossible de démarrer la génération du rapport`
+    );
+  }
+
+  return response.json();
+}
+
+export async function checkTaskStatusApi(taskId, token) {
+  const response = await fetch(`${API_BASE_URL}/check-report-status/${taskId}/`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Erreur ${response.status}: Impossible de vérifier le statut de la tâche`
     );
   }
 

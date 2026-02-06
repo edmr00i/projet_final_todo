@@ -24,6 +24,7 @@ Pour plus d'informations:
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -164,4 +165,13 @@ CORS_ALLOWED_ORIGINS = [
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Celery Beat Configuration
+# Planification des tâches périodiques
+CELERY_BEAT_SCHEDULE = {
+    'cleanup-every-5-minutes': {
+        'task': 'taches.tasks.cleanup_completed_tasks',
+        'schedule': timedelta(minutes=5),
+    },
+}
 
